@@ -231,7 +231,22 @@ def build_windows_installer() -> None:
         return
 
     log("Building installer with Inno Setup...")
-    run([iscc, str(iss_script)], cwd=BUILD_DIR / "inno_setup")
+    log(f"Running: {iscc} {iss_script}")
+    result = subprocess.run(
+        [iscc, str(iss_script)],
+        cwd=str(BUILD_DIR / "inno_setup"),
+        capture_output=True,
+        text=True,
+    )
+    if result.stdout.strip():
+        for line in result.stdout.strip().splitlines():
+            log(f"  {line}")
+    if result.stderr.strip():
+        for line in result.stderr.strip().splitlines():
+            log(f"  {line}")
+    if result.returncode != 0:
+        log(f"Inno Setup failed (exit code {result.returncode}). Skipping installer.")
+        return
 
     installer = INSTALLER_DIR / f"{APP_NAME}-setup-{VERSION}.exe"
     if installer.exists():
