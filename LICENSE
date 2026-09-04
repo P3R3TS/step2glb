@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2026 Bogdan Zabortsev
+Copyright (c) 2026 step2glb contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,3 +19,14 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+---
+
+Third-party notices / Уведомления о сторонних компонентах:
+
+This software uses the following open-source libraries:
+Данное ПО использует следующие библиотеки с открытым исходным кодом:
+
+- cascadio (MIT) — https://github.com/trimesh/cascadio
+- tkinterdnd2 (MIT) — https://github.com/Eliav2/tkinterdnd2
+- OpenCASCADE Technology (LGPL 2.1 with exception) — https://github.com/Open-Cascade-SAS/OCCT

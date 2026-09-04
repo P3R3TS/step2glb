@@ -1,0 +1,49 @@
+{
+    "app_name": "step2glb",
+    "version": "1.0.0",
+    "description": "STEP/IGES to GLB converter",
+    "description_ru": "Преобразователь STEP/IGES в GLB",
+    "author": "step2glb contributors",
+    "url": "https://github.com/yourname/step2glb",
+    "license": "MIT",
+
+    "entry_point": "main.py",
+    "ini_file": "step2glb.ini",
+    "bat_file": "step2glb.bat",
+    "license_file": "LICENSE",
+
+    "icons": {
+        "windows": "icon.ico",
+        "macos": "icon.icns",
+        "linux": "icon.png"
+    },
+
+    "windows": {
+        "exe_name": "step2glb.exe",
+        "installer_id": "{B1E2C3D4-5678-9ABC-DEF0-123456789ABC}",
+        "architecture": "x64compatible",
+        "min_version": "6.1",
+        "compression": "lzma2/ultra64",
+        "privileges": "lowest",
+        "file_associations": [".stp", ".step", ".igs", ".iges"]
+    },
+
+    "macos": {
+        "bundle_id": "com.step2glb.app",
+        "min_version": "10.14",
+        "high_resolution": true
+    },
+
+    "linux": {
+        "strip_binary": true,
+        "categories": "Development;Engineering;"
+    },
+
+    "pyinstaller": {
+        "onefile": true,
+        "windowed": true,
+        "console": false,
+        "upx": true,
+        "clean": true
+    }
+}

@@ -1,0 +1,6 @@
+# Обязательные зависимости / Required dependencies
+cascadio>=0.1.1
+tkinterdnd2>=0.3.0
+
+# Для сборки exe (опционально) / For building exe (optional)
+# pyinstaller>=5.0
