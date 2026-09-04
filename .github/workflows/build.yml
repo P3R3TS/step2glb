@@ -122,18 +122,53 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Extract version from tag
+        id: version
+        run: echo "version=${GITHUB_REF#refs/tags/v}" >> "$GITHUB_OUTPUT"
+
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
           path: artifacts
+          merge-multiple: false
 
-      - name: List artifacts
-        run: find artifacts -type f | sort
+      - name: Flatten and rename artifacts with platform
+        run: |
+          VERSION="${GITHUB_REF#refs/tags/v}"
+          mkdir -p release
+          cd artifacts
+          for artifact_dir in */; do
+            dir="${artifact_dir%/}"
+            echo "Processing artifact: ${dir}"
+            find "${dir}" -maxdepth 1 -type f | while read -r f; do
+              name="$(basename "$f")"
+              case "${dir}" in
+                *windows*installer*)
+                  cp "$f" "../release/step2glb-setup-${VERSION}.exe"
+                  ;;
+                *windows*portable*)
+                  cp "$f" "../release/step2glb-${VERSION}-windows.exe"
+                  ;;
+                *linux*)
+                  cp "$f" "../release/step2glb-${VERSION}-linux"
+                  ;;
+                *macos*)
+                  cp "$f" "../release/step2glb-${VERSION}-macos"
+                  ;;
+                *)
+                  echo "  [skip] unknown artifact dir: ${dir}"
+                  ;;
+              esac
+            done
+          done
+          cd ..
+          echo "=== Release files ==="
+          ls -la release/
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           generate_release_notes: true
-          files: artifacts/**/*
+          files: release/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
