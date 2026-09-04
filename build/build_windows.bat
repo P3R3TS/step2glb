@@ -20,13 +20,14 @@ setlocal enabledelayedexpansion
 REM Читаем конфигурацию из build_config.json через Python
 REM Read configuration from build_config.json via Python
 for /f "delims=" %%i in ('python -c "import json; c=json.load(open('build/build_config.json')); print(c['app_name'])"') do set APP_NAME=%%i
-for /f "delims=" %%i in ('python -c "import json; c=json.load(open('build/build_config.json')); print(c['version'])"') do set VERSION=%%i
 for /f "delims=" %%i in ('python -c "import json; c=json.load(open('build/build_config.json')); print(c['entry_point'])"') do set ENTRY_POINT=%%i
 for /f "delims=" %%i in ('python -c "import json; c=json.load(open('build/build_config.json')); print(c['ini_file'])"') do set INI_FILE=%%i
 for /f "delims=" %%i in ('python -c "import json; c=json.load(open('build/build_config.json')); print(c['windows']['exe_name'])"') do set EXE_NAME=%%i
 
 set MODE=%1
 if "%MODE%"=="" set MODE=both
+set VERSION=%2
+if "%VERSION%"=="" set VERSION=dev
 
 echo ============================================================
 echo  %APP_NAME% build script for Windows (v%VERSION%)

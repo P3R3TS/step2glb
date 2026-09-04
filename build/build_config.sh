@@ -7,7 +7,6 @@
 # ============================================================================
 
 APP_NAME="step2glb"
-APP_VERSION="1.0.0"
 APP_DESCRIPTION="STEP/IGES to GLB converter"
 APP_AUTHOR="step2glb contributors"
 APP_URL="https://github.com/yourname/step2glb"
@@ -15,7 +14,6 @@ APP_LICENSE="MIT"
 
 ENTRY_POINT="main.py"
 INI_FILE="step2glb.ini"
-BAT_FILE="step2glb.bat"
 
 ICON_ICO="icon.ico"
 ICON_ICNS="icon.icns"

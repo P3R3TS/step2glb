@@ -1,6 +1,5 @@
 {
     "app_name": "step2glb",
-    "version": "1.0.0",
     "description": "STEP/IGES to GLB converter",
     "description_ru": "Преобразователь STEP/IGES в GLB",
     "author": "step2glb contributors",
@@ -9,7 +8,6 @@
 
     "entry_point": "main.py",
     "ini_file": "step2glb.ini",
-    "bat_file": "step2glb.bat",
     "license_file": "LICENSE",
 
     "icons": {

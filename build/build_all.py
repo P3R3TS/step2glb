@@ -37,10 +37,8 @@ INSTALLER_DIR = PROJECT_ROOT / "installer"
 BUILD_DIR = PROJECT_ROOT / "build"
 
 APP_NAME = _cfg["app_name"]
-VERSION = _cfg["version"]
 ENTRY_POINT = _cfg["entry_point"]
 INI_FILE = PROJECT_ROOT / _cfg["ini_file"]
-BAT_FILE = PROJECT_ROOT / _cfg.get("bat_file", "")
 
 
 # ---------------------------------------------------------------------------
@@ -160,16 +158,11 @@ def build_windows(python: Path, mode: str = "both") -> None:
     # Портативный архив / Portable archive
     if mode in ("portable", "both"):
         archive = DIST_DIR / f"{APP_NAME}-{VERSION}-windows-portable.zip"
-        portable_files = [f"{APP_NAME}.exe"]
-        if BAT_FILE.exists():
-            shutil.copy2(BAT_FILE, DIST_DIR / BAT_FILE.name)
-            portable_files.append(BAT_FILE.name)
 
         with zipfile.ZipFile(archive, "w", zipfile.ZIP_DEFLATED) as zf:
-            for fname in portable_files:
-                fpath = DIST_DIR / fname
-                if fpath.exists():
-                    zf.write(fpath, f"{APP_NAME}/{fname}")
+            exe_path = DIST_DIR / f"{APP_NAME}.exe"
+            if exe_path.exists():
+                zf.write(exe_path, f"{APP_NAME}/{APP_NAME}.exe")
 
         log(f"Portable archive: {archive}")
 
@@ -231,9 +224,20 @@ def build_windows_installer() -> None:
         return
 
     log("Building installer with Inno Setup...")
-    log(f"Running: {iscc} {iss_script}")
+    import re
+    # VersionInfoVersion требует X.Y.Z.W (только цифры)
+    # VersionInfoVersion requires X.Y.Z.W (digits only)
+    nums = re.findall(r"\d+", VERSION)
+    info_version = ".".join(nums[:4]) if nums else "0.0.0.0"
+    cmd = [
+        iscc,
+        f"/DMyAppVersion={VERSION}",
+        f"/DMyInfoVersion={info_version}",
+        str(iss_script),
+    ]
+    log(f"Running: {' '.join(cmd)}")
     result = subprocess.run(
-        [iscc, str(iss_script)],
+        cmd,
         cwd=str(BUILD_DIR / "inno_setup"),
         capture_output=True,
         text=True,
@@ -245,8 +249,8 @@ def build_windows_installer() -> None:
         for line in result.stderr.strip().splitlines():
             log(f"  {line}")
     if result.returncode != 0:
-        log(f"Inno Setup failed (exit code {result.returncode}). Skipping installer.")
-        return
+        log(f"Inno Setup failed with exit code {result.returncode}")
+        sys.exit(1)
 
     installer = INSTALLER_DIR / f"{APP_NAME}-setup-{VERSION}.exe"
     if installer.exists():
@@ -332,9 +336,14 @@ def main() -> None:
     parser.add_argument("--mode", choices=["portable", "installer", "both"],
                         default="both",
                         help="Build mode: portable, installer, or both (default: both)")
+    parser.add_argument("--version", required=True,
+                        help="Version string (e.g. 1.0.0)")
     parser.add_argument("--no-venv", action="store_true",
                         help="Skip virtual environment creation")
     args = parser.parse_args()
+
+    global VERSION
+    VERSION = args.version
 
     # Без аргументов — собираем для текущей платформы
     # No args — build for the current platform

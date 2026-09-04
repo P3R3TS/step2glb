@@ -30,7 +30,7 @@ ArchitecturesInstallIn64BitMode=x64compatible
 PrivilegesRequired=lowest
 UninstallDisplayName={#MyAppName} {#MyAppVersion}
 UninstallDisplayIcon={app}\{#MyAppExeName}
-VersionInfoVersion={#MyAppVersion}.0
+VersionInfoVersion={#MyInfoVersion}
 #if FileExists("..\..\icon.ico")
 SetupIconFile=..\..\icon.ico
 #endif
@@ -55,7 +55,6 @@ Name: "launchafter"; Description: "Запустить после установ�
 
 [Files]
 Source: "{#MyDistDir}\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\..\{#MyBatFile}"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\..\{#MyAppLicense}"; DestDir: "{app}"; Flags: ignoreversion isreadme
 
 ; ============================================================================

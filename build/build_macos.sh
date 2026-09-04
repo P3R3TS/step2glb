@@ -18,12 +18,13 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "${SCRIPT_DIR}/build_config.sh"
 
 MODE="${1:-portable}"
+VERSION="${2:-dev}"
 
 # Переход в корень проекта / Change to project root
 cd "$(dirname "$0")/.."
 
 echo "============================================================"
-echo " ${APP_NAME} build script for macOS (v${APP_VERSION})"
+echo " ${APP_NAME} build script for macOS (v${VERSION})"
 echo " Mode: ${MODE}"
 echo "============================================================"
 echo
@@ -129,7 +130,7 @@ PLIST
 
         echo "[build] Creating DMG..."
         if command -v hdiutil &>/dev/null; then
-            DMG_NAME="${APP_NAME}-${APP_VERSION}-macos.dmg"
+            DMG_NAME="${APP_NAME}-${VERSION}-macos.dmg"
             hdiutil create -volname "${APP_NAME}" \
                 -srcfolder "dist/${APP_NAME}.app" \
                 -ov -format UDZO \
@@ -157,7 +158,7 @@ fi
 
 # ZIP архив / ZIP archive
 if [ "${MODE}" = "portable" ] && [ -f "dist/${APP_NAME}" ]; then
-    ARCHIVE="dist/${APP_NAME}-${APP_VERSION}-macos-portable.zip"
+    ARCHIVE="dist/${APP_NAME}-${VERSION}-macos-portable.zip"
     zip -j "${ARCHIVE}" "dist/${APP_NAME}"
     echo "[build] Archive: ${ARCHIVE}"
 fi

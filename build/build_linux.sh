@@ -18,12 +18,13 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "${SCRIPT_DIR}/build_config.sh"
 
 MODE="${1:-portable}"
+VERSION="${2:-dev}"
 
 # Переход в корень проекта / Change to project root
 cd "$(dirname "$0")/.."
 
 echo "============================================================"
-echo " ${APP_NAME} build script for Linux (v${APP_VERSION})"
+echo " ${APP_NAME} build script for Linux (v${VERSION})"
 echo " Mode: ${MODE}"
 echo "============================================================"
 echo
@@ -105,9 +106,9 @@ EOF
             # Иконка (заглушка) / Icon (placeholder)
             # В реальном проекте: cp icon.png "${APPDIR}/usr/share/icons/hicolor/256x256/apps/${APP_NAME}.png"
 
-            appimagetool "${APPDIR}" "dist/${APP_NAME}-${APP_VERSION}-linux.AppImage"
+            appimagetool "${APPDIR}" "dist/${APP_NAME}-${VERSION}-linux.AppImage"
             rm -rf "${APPDIR}"
-            echo "[build] AppImage: dist/${APP_NAME}-${APP_VERSION}-linux.AppImage"
+            echo "[build] AppImage: dist/${APP_NAME}-${VERSION}-linux.AppImage"
         else
             echo "[warning] appimagetool not found. Skipping AppImage creation."
             echo "[warning] Install: https://github.com/AppImage/AppImageKit"
@@ -133,7 +134,7 @@ fi
 
 # Создание tar.gz / Create tar.gz
 if [ "${MODE}" = "portable" ] && [ -f "dist/${APP_NAME}" ]; then
-    ARCHIVE="dist/${APP_NAME}-${APP_VERSION}-linux-portable.tar.gz"
+    ARCHIVE="dist/${APP_NAME}-${VERSION}-linux-portable.tar.gz"
     tar -czf "${ARCHIVE}" -C dist "${APP_NAME}"
     echo "[build] Archive: ${ARCHIVE}"
 fi
