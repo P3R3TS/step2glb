@@ -155,17 +155,6 @@ def build_windows(python: Path, mode: str = "both") -> None:
         size_mb = exe_path.stat().st_size / (1024 * 1024)
         log(f"Portable exe: {exe_path} ({size_mb:.1f} MB)")
 
-    # Портативный архив / Portable archive
-    if mode in ("portable", "both"):
-        archive = DIST_DIR / f"{APP_NAME}-{VERSION}-windows-portable.zip"
-
-        with zipfile.ZipFile(archive, "w", zipfile.ZIP_DEFLATED) as zf:
-            exe_path = DIST_DIR / f"{APP_NAME}.exe"
-            if exe_path.exists():
-                zf.write(exe_path, f"{APP_NAME}/{APP_NAME}.exe")
-
-        log(f"Portable archive: {archive}")
-
     # Установщик / Installer
     if mode in ("installer", "both"):
         build_windows_installer()
@@ -281,11 +270,6 @@ def build_linux(python: Path) -> None:
         log(f"Binary: {binary} ({size_mb:.1f} MB)")
         binary.chmod(binary.stat().st_mode | 0o755)
 
-    archive = DIST_DIR / f"{APP_NAME}-{VERSION}-linux-portable.tar.gz"
-    run(["tar", "-czf", str(archive), "-C", str(DIST_DIR), APP_NAME], check=False)
-    if archive.exists():
-        log(f"Archive: {archive}")
-
 
 # ---------------------------------------------------------------------------
 # Сборка macOS / macOS build
@@ -307,19 +291,16 @@ def build_macos(python: Path) -> None:
     if target.exists():
         if target.is_file():
             size_mb = target.stat().st_size / (1024 * 1024)
+            log(f"Binary: {target} ({size_mb:.1f} MB)")
         else:
             size_mb = sum(f.stat().st_size for f in target.rglob("*") if f.is_file()) / (1024 * 1024)
-        log(f"Output: {target} ({size_mb:.1f} MB)")
-
-    archive = DIST_DIR / f"{APP_NAME}-{VERSION}-macos-portable.zip"
-    with zipfile.ZipFile(archive, "w", zipfile.ZIP_DEFLATED) as zf:
-        if app_bundle.exists():
-            for file in app_bundle.rglob("*"):
-                if file.is_file():
-                    zf.write(file, f"{APP_NAME}.app/{file.relative_to(app_bundle)}")
-        elif binary.exists():
-            zf.write(binary, binary.name)
-    log(f"Archive: {archive}")
+            # .app bundle — multiple files, zip it
+            archive = DIST_DIR / f"{APP_NAME}-{VERSION}-macos-portable.zip"
+            with zipfile.ZipFile(archive, "w", zipfile.ZIP_DEFLATED) as zf:
+                for file in app_bundle.rglob("*"):
+                    if file.is_file():
+                        zf.write(file, f"{APP_NAME}.app/{file.relative_to(app_bundle)}")
+            log(f"Archive: {archive} ({size_mb:.1f} MB)")
 
 
 # ---------------------------------------------------------------------------

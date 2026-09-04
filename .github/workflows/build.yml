@@ -25,15 +25,12 @@ jobs:
           - os: windows-latest
             platform: windows
             artifact_name: step2glb-windows
-            ext: .exe
           - os: ubuntu-latest
             platform: linux
             artifact_name: step2glb-linux
-            ext: ''
           - os: macos-latest
             platform: macos
             artifact_name: step2glb-macos
-            ext: ''
 
     runs-on: ${{ matrix.os }}
     name: Build (${{ matrix.platform }})
@@ -78,23 +75,41 @@ jobs:
         if: matrix.platform == 'macos'
         run: python build/build_all.py --version ${{ steps.version.outputs.version }} --mode portable --no-venv
 
-      - name: Upload portable artifact
+      - name: Upload exe (Windows)
+        if: matrix.platform == 'windows'
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.artifact_name }}-portable
-          path: |
-            dist/step2glb${{ matrix.ext }}
-            dist/step2glb-*.zip
-            dist/step2glb-*.tar.gz
+          path: dist/step2glb.exe
           if-no-files-found: error
           retention-days: 5
 
-      - name: Upload installer (Windows only)
+      - name: Upload installer (Windows)
         if: matrix.platform == 'windows'
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.artifact_name }}-installer
           path: installer/*.exe
+          if-no-files-found: error
+          retention-days: 5
+
+      - name: Upload binary (Linux)
+        if: matrix.platform == 'linux'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact_name }}-portable
+          path: dist/step2glb
+          if-no-files-found: error
+          retention-days: 5
+
+      - name: Upload binary or zip (macOS)
+        if: matrix.platform == 'macos'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact_name }}-portable
+          path: |
+            dist/step2glb
+            dist/step2glb-*.zip
           if-no-files-found: error
           retention-days: 5
 
