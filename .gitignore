@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environment
+.venv/
+venv/
+ENV/
+
+# Build artifacts
+dist/
+build/step2glb/
+build/pyinstaller/build/
+installer/
+
+# PyInstaller
+*.spec.bak
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# User settings (generated at runtime)
+step2glb.ini
+
+# Compiled executables in root (built to dist/)
+*.exe
+
+# Logs
+*.log
